@@ -1,6 +1,25 @@
+<<<<<<<< Updated upstream:src/utils/token-trimmer.ts
 
 import { getEncoding } from 'js-tiktoken';
 import { RecursiveCharacterTextSplitter } from './text-splitter';    
+========
+import { getEncoding } from 'js-tiktoken';
+import { RecursiveCharacterTextSplitter } from './text-splitter';
+import { geminiFlashModel } from '../libs/gemini';
+// import { o3MiniModel } from '../libs/openai-config';
+
+
+// Gemini model types
+
+// export async function geminiModel(prompt: string) {
+//   return await geminiFlashModel(prompt);
+// }
+
+// export async function generateWithO3Mini(prompt: string) {
+//   return await o3MiniModel(prompt);
+// }
+
+>>>>>>>> Stashed changes:src/ai/aihub.ts
 const MinChunkSize = 140;
 const encoder = getEncoding('o200k_base');
 
@@ -38,4 +57,8 @@ export function trimPrompt(
 
   // recursively trim until the prompt is within the context size
   return trimPrompt(trimmedPrompt, contextSize);
+<<<<<<<< Updated upstream:src/utils/token-trimmer.ts
 }
+========
+} 
+>>>>>>>> Stashed changes:src/ai/aihub.ts
