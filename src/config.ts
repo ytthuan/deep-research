@@ -4,7 +4,6 @@ import { resolve } from 'path';
 // Load environment variables from .env.local
 config({ path: resolve(process.cwd(), '.env.local') });
 
-<<<<<<< Updated upstream
 // Validate required environment variables, change to firecrawl and remove all google search keys if you want to use it
 const requiredEnvVars = [
 //   'OPENAI_KEY',
@@ -16,13 +15,6 @@ const requiredEnvVars = [
   'GOOGLE_CX',
   'GOOGLE_PROJECT_ID',
   'GOOGLE_LOCATION',
-=======
-// Validate required environment variables
-const requiredEnvVars = [
-//   'OPENAI_KEY',
-  'GEMINI_API_KEY',
-  'FIRECRAWL_KEY',
->>>>>>> Stashed changes
 ] as const;
 
 for (const envVar of requiredEnvVars) {
@@ -33,7 +25,6 @@ for (const envVar of requiredEnvVars) {
 
 // Export environment variables with types
 export const env = {
-<<<<<<< Updated upstream
   OPENAI_KEY: process.env.OPENAI_KEY || '',
   OPENAI_MODEL: process.env.OPENAI_MODEL || 'gpt-4o',
   OPENAI_ENDPOINT: process.env.OPENAI_ENDPOINT || 'https://api.openai.com/v1',
@@ -52,14 +43,3 @@ export const env = {
   JINA1: process.env.JINA1 || '',
   JINA2: process.env.JINA2 || '',
 } as const; 
-=======
-  OPENAI_KEY: process.env.OPENAI_KEY!,
-  OPENAI_MODEL: process.env.OPENAI_MODEL || 'gpt-4o',
-  OPENAI_ENDPOINT: process.env.OPENAI_ENDPOINT || 'https://api.openai.com/v1',
-  GOOGLE_GENERATIVE_AI_API_KEY: process.env.GOOGLE_GENERATIVE_AI_API_KEY!,
-  GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-2.0-flash-exp',
-  FIRECRAWL_KEY: process.env.FIRECRAWL_KEY!,
-//   FIRECRAWL_BASE_URL: process.env.FIRECRAWL_BASE_URL,
-  CONTEXT_SIZE: Number(process.env.CONTEXT_SIZE) || 128_000,
-} as const; 
->>>>>>> Stashed changes

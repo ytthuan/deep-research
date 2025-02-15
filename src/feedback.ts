@@ -1,10 +1,5 @@
 import { z } from 'zod';
-<<<<<<< Updated upstream
-
-import { vertexModel, azureModel } from './ai/aihub';
-=======
-import { geminiFlashModel } from './libs/gemini';
->>>>>>> Stashed changes
+import { vertexModel } from './ai/aihub';
 import { systemPrompt } from './prompt';
 import { generateObject } from 'ai';
 
@@ -17,11 +12,7 @@ export async function generateFeedback({
 }) {
   // Use the flash-thinking model for analytical feedback
   const userFeedback = await generateObject({
-<<<<<<< Updated upstream
     model: vertexModel,
-=======
-    model: geminiFlashModel,
->>>>>>> Stashed changes
     system: systemPrompt(),
     prompt: `Given the following query from the user, ask some follow up questions to clarify the research direction. Return a maximum of ${numQuestions} questions, but feel free to return less if the original query is clear: <query>${query}</query>`,
     schema: z.object({
@@ -35,7 +26,6 @@ export async function generateFeedback({
 
   return userFeedback.object.questions.slice(0, numQuestions);
 
-  
 }
 
 // Alternative version that uses direct model interaction without JSON structure
