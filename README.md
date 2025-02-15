@@ -81,19 +81,13 @@ flowchart TB
 ## Requirements
 
 - Node.js environment
-- API keys for:
-  - Firecrawl API (for web search and content extraction)
-  - OpenAI API (for o3 mini model)
-<<<<<<< Updated upstream
-  - Google Search API
-  - Google Project ID
-  - Google Location
-  - Google Generative AI API Key
-  - Jina API Key
-=======
-  - Google Gemini API (optional)
-  - Azure OpenAI API (optional)
->>>>>>> Stashed changes
+- One of the following API keys:
+  - LLM: OpenAI, Vertex or Gemini
+  - Search and scrape:
+    - Firecrawl API (for web search and content extraction) or
+      - Google Search API
+      - Google Search Engine ID
+      - Jina API Key
 
 ## Setup
 
@@ -120,7 +114,6 @@ JINA1="your_jina1_api_key"
 JINA2="your_jina2_api_key"
 # if you want to use openai
 OPENAI_KEY="your_openai_key"
-<<<<<<< Updated upstream
 # if you want to use vertex 
 # gcloud init
 # gcloud auth application-default login
@@ -131,7 +124,6 @@ GOOGLE_LOCATION="your_google_location"
 GOOGLE_GENERATIVE_AI_API_KEY="your_gemini_api_key"
 
 
-=======
 
 # Optional: Google Gemini configuration
 GEMINI_API_KEY="your_gemini_api_key"
@@ -141,7 +133,6 @@ GEMINI_MODEL="gemini-pro"  # or other available Gemini models
 AZURE_OPENAI_KEY="your_azure_openai_key"
 AZURE_OPENAI_ENDPOINT="your_azure_endpoint"
 AZURE_OPENAI_MODEL="gpt-4"  # or other available Azure OpenAI models
->>>>>>> Stashed changes
 ```
 
 To use local LLM, comment out `OPENAI_KEY` and instead uncomment `OPENAI_ENDPOINT` and `OPENAI_MODEL`:
