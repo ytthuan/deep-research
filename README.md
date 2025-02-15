@@ -1,10 +1,8 @@
-# Forked from
-
-https://github.com/dzhng/deep-research
 
 # Purpose:
 
-Optimized to used with various AI provider like gemini, AOAI.
+Customized to used with various AI provider like gemini, Azure OpenAI, VertexAI
+You can also use google search engines + jina instead of firecrawl
 
 # Open Deep Research
 
@@ -86,6 +84,11 @@ flowchart TB
 - API keys for:
   - Firecrawl API (for web search and content extraction)
   - OpenAI API (for o3 mini model)
+  - Google Search API
+  - Google Project ID
+  - Google Location
+  - Google Generative AI API Key
+  - Jina API Key
 
 ## Setup
 
@@ -102,10 +105,26 @@ npm install
 
 ```bash
 FIRECRAWL_KEY="your_firecrawl_key"
+
 # If you want to use your self-hosted Firecrawl, add the following below:
 # FIRECRAWL_BASE_URL="http://localhost:3002"
-
+# if you want to use google search + jina instead of firecrawl
+GOOGLE_SEARCH_API="your_google_search_api" #https://developers.google.com/custom-search/v1/overview
+GOOGLE_CX="your_google_cx" #https://programmablesearchengine.google.com/controlpanel/all
+JINA1="your_jina1_api_key"
+JINA2="your_jina2_api_key"
+# if you want to use openai
 OPENAI_KEY="your_openai_key"
+# if you want to use vertex 
+# gcloud init
+# gcloud auth application-default login
+# https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login
+GOOGLE_PROJECT_ID="your_google_project_id"
+GOOGLE_LOCATION="your_google_location"
+# you can also use gemini
+GOOGLE_GENERATIVE_AI_API_KEY="your_gemini_api_key"
+
+
 ```
 
 To use local LLM, comment out `OPENAI_KEY` and instead uncomment `OPENAI_ENDPOINT` and `OPENAI_MODEL`:
@@ -192,6 +211,11 @@ OPENAI_MODEL="custom_model"
    - Compiles all findings into a comprehensive markdown report
    - Includes all sources and references
    - Organizes information in a clear, readable format
+
+
+## Acknowledgements
+
+- [Deep Research](https://github.com/dzhng/deep-research)
 
 ## License
 

@@ -1,13 +1,22 @@
+/**
+ * deep-research.ts
+ * Main module for performing deep research using search engines and AI processing.
+ * Supports both Firecrawl and Google Search with content scraping.
+ */
+
 import FirecrawlApp, { SearchResponse } from '@mendable/firecrawl-js';
+// import { SearchResult } from './libs/fetch-data';
 import { generateObject } from 'ai';
 import { compact } from 'lodash-es';
 import pLimit from 'p-limit';
 import { z } from 'zod';
 
-import { o3MiniModel, trimPrompt } from './ai/providers';
+import { vertexModel , geminiFlashModel } from './ai/aihub';
 import { systemPrompt } from './prompt';
 import { OutputManager } from './output-manager';
-
+import { trimPrompt } from './utils/token-trimmer';
+import { env } from './config';
+import { googleSearch } from './libs/fetch-data';
 // Initialize output manager for coordinated console/progress output
 const output = new OutputManager();
 
@@ -16,19 +25,28 @@ function log(...args: any[]) {
   output.log(...args);
 }
 
+type SearchType = 'firecrawl' | 'google';
+const search_type: SearchType = 'google';
+
+/**
+ * Tracks progress of the research process
+ */
 export type ResearchProgress = {
-  currentDepth: number;
-  totalDepth: number;
-  currentBreadth: number;
-  totalBreadth: number;
-  currentQuery?: string;
-  totalQueries: number;
-  completedQueries: number;
+  currentDepth: number;     // Current depth level
+  totalDepth: number;       // Maximum depth to reach
+  currentBreadth: number;   // Current breadth level
+  totalBreadth: number;     // Maximum breadth to explore
+  currentQuery?: string;    // Current search query being processed
+  totalQueries: number;     // Total number of queries to process
+  completedQueries: number; // Number of completed queries
 };
 
+/**
+ * Contains research results and visited URLs
+ */
 type ResearchResult = {
-  learnings: string[];
-  visitedUrls: string[];
+  learnings: string[];    // List of insights gained
+  visitedUrls: string[];  // List of URLs processed
 };
 
 // increase this if you have higher API rate limits
@@ -37,11 +55,16 @@ const ConcurrencyLimit = 2;
 // Initialize Firecrawl with optional API key and optional base url
 
 const firecrawl = new FirecrawlApp({
-  apiKey: process.env.FIRECRAWL_KEY ?? '',
-  apiUrl: process.env.FIRECRAWL_BASE_URL,
+  apiKey: env.FIRECRAWL_KEY ?? '',
+  apiUrl: env.FIRECRAWL_BASE_URL,
 });
 
-// take en user query, return a list of SERP queries
+/**
+ * Generates search queries based on user input and previous learnings
+ * @param query Initial research query
+ * @param numQueries Number of queries to generate
+ * @param learnings Previous research findings
+ */
 async function generateSerpQueries({
   query,
   numQueries = 3,
@@ -54,7 +77,7 @@ async function generateSerpQueries({
   learnings?: string[];
 }) {
   const res = await generateObject({
-    model: o3MiniModel,
+    model: vertexModel,
     system: systemPrompt(),
     prompt: `Given the following prompt from the user, generate a list of SERP queries to research the topic. Return a maximum of ${numQueries} queries, but feel free to return less if the original prompt is clear. Make sure each query is unique and not similar to each other: <prompt>${query}</prompt>\n\n${
       learnings
@@ -86,6 +109,9 @@ async function generateSerpQueries({
   return res.object.queries.slice(0, numQueries);
 }
 
+/**
+ * Processes search results to extract learnings and generate follow-up questions
+ */
 async function processSerpResult({
   query,
   result,
@@ -98,12 +124,12 @@ async function processSerpResult({
   numFollowUpQuestions?: number;
 }) {
   const contents = compact(result.data.map(item => item.markdown)).map(
-    content => trimPrompt(content, 25_000),
+    content => trimPrompt(content || '', 25_000),
   );
   log(`Ran ${query}, found ${contents.length} contents`);
 
   const res = await generateObject({
-    model: o3MiniModel,
+    model: vertexModel,
     abortSignal: AbortSignal.timeout(60_000),
     system: systemPrompt(),
     prompt: `Given the following contents from a SERP search for the query <query>${query}</query>, generate a list of learnings from the contents. Return a maximum of ${numLearnings} learnings, but feel free to return less if the contents are clear. Make sure each learning is unique and not similar to each other. The learnings should be concise and to the point, as detailed and information dense as possible. Make sure to include any entities like people, places, companies, products, things, etc in the learnings, as well as any exact metrics, numbers, or dates. The learnings will be used to research the topic further.\n\n<contents>${contents
@@ -128,6 +154,9 @@ async function processSerpResult({
   return res.object;
 }
 
+/**
+ * Generates final markdown report from research findings
+ */
 export async function writeFinalReport({
   prompt,
   learnings,
@@ -145,7 +174,7 @@ export async function writeFinalReport({
   );
 
   const res = await generateObject({
-    model: o3MiniModel,
+    model: vertexModel,
     system: systemPrompt(),
     prompt: `Given the following prompt from the user, write a final report on the topic using the learnings from research. Make it as as detailed as possible, aim for 3 or more pages, include ALL the learnings from research:\n\n<prompt>${prompt}</prompt>\n\nHere are all the learnings from previous research:\n\n<learnings>\n${learningsString}\n</learnings>`,
     schema: z.object({
@@ -160,6 +189,10 @@ export async function writeFinalReport({
   return res.object.reportMarkdown + urlsSection;
 }
 
+/**
+ * Main research function that performs iterative deep research
+ * Handles both breadth (multiple queries) and depth (follow-up research)
+ */
 export async function deepResearch({
   query,
   breadth,
@@ -175,6 +208,9 @@ export async function deepResearch({
   visitedUrls?: string[];
   onProgress?: (progress: ResearchProgress) => void;
 }): Promise<ResearchResult> {
+  // Initialize search results file with an empty array
+  // writeFileSync('search_rs.json', '[\n', { flag: 'w' });
+  
   const progress: ResearchProgress = {
     currentDepth: depth,
     totalDepth: depth,
@@ -206,12 +242,25 @@ export async function deepResearch({
     serpQueries.map(serpQuery =>
       limit(async () => {
         try {
-          const result = await firecrawl.search(serpQuery.query, {
+          if (search_type === 'firecrawl') {
+            var result = await firecrawl.search(serpQuery.query, {
             timeout: 15000,
             limit: 5,
-            scrapeOptions: { formats: ['markdown'] },
-          });
-
+              scrapeOptions: { formats: ['markdown'] },
+            });
+          } else {
+            var result = await googleSearch(serpQuery.query);
+          } 
+          // output result to file
+          log('rs count', result.data.length)
+          const searchResults = {
+            query: serpQuery.query,
+            results: result.data.map(item => ({
+              title: item.title || 'No Title',
+              url: item.url,
+              content: item.markdown || 'No content'
+            }))
+          };
           // Collect URLs from this search
           const newUrls = compact(result.data.map(item => item.url));
           const newBreadth = Math.ceil(breadth / 2);
@@ -219,7 +268,7 @@ export async function deepResearch({
 
           const newLearnings = await processSerpResult({
             query: serpQuery.query,
-            result,
+            result: result,
             numFollowUpQuestions: newBreadth,
           });
           const allLearnings = [...learnings, ...newLearnings.learnings];

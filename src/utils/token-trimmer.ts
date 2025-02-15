@@ -1,27 +1,6 @@
-import { createOpenAI, type OpenAIProviderSettings } from '@ai-sdk/openai';
+
 import { getEncoding } from 'js-tiktoken';
-
-import { RecursiveCharacterTextSplitter } from './text-splitter';
-
-interface CustomOpenAIProviderSettings extends OpenAIProviderSettings {
-  baseURL?: string;
-}
-
-// Providers
-const openai = createOpenAI({
-  apiKey: process.env.OPENAI_KEY!,
-  baseURL: process.env.OPENAI_ENDPOINT || 'https://api.openai.com/v1',
-} as CustomOpenAIProviderSettings);
-
-const customModel = process.env.OPENAI_MODEL || 'o3-mini';
-
-// Models
-
-export const o3MiniModel = openai(customModel, {
-  reasoningEffort: customModel.startsWith('o') ? 'medium' : undefined,
-  structuredOutputs: true,
-});
-
+import { RecursiveCharacterTextSplitter } from './text-splitter';    
 const MinChunkSize = 140;
 const encoder = getEncoding('o200k_base');
 
