@@ -59,7 +59,7 @@ async function run() {
   // Collect answers to follow-up questions
   const answers: string[] = [];
   for (const question of followUpQuestions) {
-    const answer = await askQuestion(`\n${question}\nYour answer: `);
+    const answer = await askQuestion(`\n${question.question}\nYour answer: `);
     answers.push(answer);
   }
 
@@ -67,7 +67,7 @@ async function run() {
   const combinedQuery = `
 Initial Query: ${initialQuery}
 Follow-up Questions and Answers:
-${followUpQuestions.map((q: string, i: number) => `Q: ${q}\nA: ${answers[i]}`).join('\n')}
+${followUpQuestions.map((q, i) => `Q: ${q.question}\nA: ${answers[i]}`).join('\n')}
 `;
 
   log('\nResearching your topic...');

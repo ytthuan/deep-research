@@ -17,9 +17,9 @@ const openai = createOpenAI({
   baseURL: process.env.OPENAI_ENDPOINT || 'https://api.openai.com/v1',
 } as CustomOpenAIProviderSettings);
 
-const customModel = process.env.OPENAI_MODEL || 'o3-mini';
+const customModel = process.env.OPENAI_MODEL || 'gpt-4o';
 
-export const o3MiniModel = openai(customModel, {
+export const o1MiniModel = openai(customModel, {
   reasoningEffort: customModel.startsWith('o') ? 'medium' : undefined,
   structuredOutputs: true,
 });

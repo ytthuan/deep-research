@@ -25,9 +25,8 @@ interface GoogleSearchResult {
  * @returns {string} Selected Jina API key
  */
 function randomizeJinaApiKey(): string {
-  const jina1 = env.JINA1;
-  const jina2 = env.JINA2;
-  return Math.random() < 0.5 ? jina1 : jina2;
+  const jina = env.JINA;
+  return jina;
 }
 
 /**

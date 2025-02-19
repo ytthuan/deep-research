@@ -9,8 +9,7 @@ const requiredEnvVars = [
 //   'OPENAI_KEY',
 //   'GEMINI_API_KEY',
   // 'FIRECRAWL_KEY',
-  'JINA1',
-  'JINA2',
+  'JINA',
   'GOOGLE_SEARCH_API',
   'GOOGLE_CX',
   'GOOGLE_PROJECT_ID',
@@ -40,6 +39,5 @@ export const env = {
   AZURE_OPENAI_RESOURCE_NAME: process.env.AZURE_OPENAI_RESOURCE_NAME || '',
   AZURE_OPENAI_KEY: process.env.AZURE_OPENAI_KEY || '',
   AZURE_OPENAI_DEPLOYMENT: process.env.AZURE_OPENAI_DEPLOYMENT || '',
-  JINA1: process.env.JINA1 || '',
-  JINA2: process.env.JINA2 || '',
+  JINA: process.env.JINA || '',
 } as const; 

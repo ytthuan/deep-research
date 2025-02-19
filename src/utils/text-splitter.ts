@@ -1,6 +1,5 @@
 interface TextSplitterParams {
   chunkSize: number;
-
   chunkOverlap: number;
 }
 
