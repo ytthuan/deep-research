@@ -1,10 +1,37 @@
+# Open Deep Research
+
+## Introduction
+
+Open Deep Research is a powerful, AI-driven research assistant that combines multiple AI providers (Gemini, Azure OpenAI, Vertex AI) with advanced web search capabilities to perform comprehensive, iterative research on any topic. What sets this tool apart is its ability to:
+
+1. **Flexible AI Integration**: 
+   - Supports multiple AI providers including Google's Gemini, Azure OpenAI, and Vertex AI
+   - Easy configuration through environment variables
+   - Fallback options between providers
+
+2. **Dual Search Capabilities**:
+   - Google Custom Search + Jina for web scraping -option 1
+   - Firecrawl integration for efficient search and content extraction -option 2
+   - Configurable search depth and breadth
+
+3. **Intelligent Research Process**:
+   - Adaptive questioning to understand research needs
+   - Iterative deep diving into topics
+   - Smart context management across search iterations
+   - Parallel processing of search queries for efficiency
+
+4. **Production-Ready Features**:
+   - Rate limiting and concurrency control
+   - Error handling and timeout management
+   - Progress tracking and detailed logging
+   - Markdown report generation with source attribution
+
+This tool is perfect for researchers, analysts, students, or anyone needing to gather comprehensive information on complex topics quickly and efficiently.
 
 # Purpose:
 
 Customized to used with various AI provider like gemini, Azure OpenAI, VertexAI
 You can also use google search engines + jina instead of firecrawl
-
-# Open Deep Research
 
 An AI-powered research assistant that performs iterative, deep research on any topic by combining search engines, web scraping, and large language models.
 
@@ -110,8 +137,7 @@ FIRECRAWL_KEY="your_firecrawl_key"
 # if you want to use google search + jina instead of firecrawl
 GOOGLE_SEARCH_API="your_google_search_api" #https://developers.google.com/custom-search/v1/overview
 GOOGLE_CX="your_google_cx" #https://programmablesearchengine.google.com/controlpanel/all
-JINA1="your_jina1_api_key"
-JINA2="your_jina2_api_key"
+JINA="your_jina_api_key"
 # if you want to use openai
 OPENAI_KEY="your_openai_key"
 # if you want to use vertex 
