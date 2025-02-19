@@ -41,10 +41,27 @@ The goal of this repo is to provide the simplest implementation of a deep resear
 
 ```mermaid
 flowchart TB
-    subgraph Input
+    subgraph Input[Initial Setup]
         Q[User Query]
         B[Breadth Parameter]
         D[Depth Parameter]
+        
+        subgraph AI[AI Provider]
+            G[Gemini]
+            V[Vertex AI]
+            A[Azure OpenAI]
+        end
+        
+        subgraph Search[Search Method]
+            GS[Google + Jina]
+            FC[Firecrawl]
+        end
+    end
+
+    subgraph Feedback[Feedback Loop]
+        FQ[Generate Follow-up Questions]
+        UA[User Answers]
+        CQ[Combined Query]
     end
 
     DR[Deep Research] -->
@@ -70,7 +87,12 @@ flowchart TB
     MR[Markdown Report]
 
     %% Main Flow
-    Q & B & D --> DR
+    Q --> FQ
+    FQ --> UA
+    UA --> CQ
+    B & D & CQ --> DR
+    G & V & A --> DR
+    GS & FC --> DR
 
     %% Results to Decision
     NL & ND --> DP
@@ -88,12 +110,15 @@ flowchart TB
     classDef recursive fill:#ffa502,stroke:#ff7f50,color:black
     classDef output fill:#ff4757,stroke:#ff6b81,color:black
     classDef results fill:#a8e6cf,stroke:#3b7a57,color:black
+    classDef feedback fill:#ff9ff3,stroke:#f368e0,color:black
 
     class Q,B,D input
     class DR,SQ,PR process
     class DP,RD recursive
     class MR output
     class NL,ND results
+    class FQ,UA,CQ feedback
+    class G,V,A,GS,FC input
 ```
 
 ## Features
@@ -158,7 +183,7 @@ GEMINI_MODEL="gemini-pro"  # or other available Gemini models
 # Optional: Azure OpenAI configuration
 AZURE_OPENAI_KEY="your_azure_openai_key"
 AZURE_OPENAI_ENDPOINT="your_azure_endpoint"
-AZURE_OPENAI_MODEL="gpt-4"  # or other available Azure OpenAI models
+AZURE_OPENAI_MODEL="gpt-4o"  # or other available Azure OpenAI models
 ```
 
 To use local LLM, comment out `OPENAI_KEY` and instead uncomment `OPENAI_ENDPOINT` and `OPENAI_MODEL`:
