@@ -114,6 +114,68 @@ flowchart TB
     class FQ,UA,CQ feedback
 ```
 
+## TODO
+```mermaid
+flowchart TB
+    subgraph Input[Initial Setup]
+        Q[User Query]
+        B[Breadth]
+        D[Depth]
+        KB[Knowledge Base: Empty]
+        subgraph AI[AI Providers]
+            G[Gemini]
+            V[Vertex AI]
+        end
+        subgraph Search[Search Methods]
+            GS[Google + Jina]
+            FC[Firecrawl]
+        end
+    end
+
+    subgraph Feedback[Adaptive Feedback Loop]
+        generateFQ[Generate Follow-up Questions using AI & KB]
+        getUA[Get User Answers]
+        evaluateAnswers[Evaluate if Sufficient]
+        combineQuery[Combine into CQ]
+        generateFQ --> getUA --> evaluateAnswers -->|Need more| generateFQ
+        evaluateAnswers -->|Sufficient| combineQuery
+    end
+
+    subgraph Research[Deep Research]
+        selectAI[Select AI Provider]
+        interpretQuery[Interpret CQ using AI & KB]
+        generateQueries[Generate Research Queries]
+        selectSearch[Select Search Methods]
+        fetchResults[Fetch Results]
+        processResults[Process Results]
+        updateKB[Update Knowledge Base]
+        evaluateQuality[Evaluate Quality]
+    end
+
+    subgraph Decision[Decision Point]
+        checkDepth{Depth > 0 & Promising Directions?}
+        selectDirection[Select New Direction]
+        formulateQuery[Formulate New CQ]
+        decrementDepth[Decrement Depth]
+    end
+
+    subgraph Output[Final Output]
+        generateReport[Generate Report]
+    end
+
+    Q & KB --> generateFQ
+    combineQuery & B & D & AI & Search --> selectAI
+    KB --> selectAI --> interpretQuery
+    KB --> interpretQuery --> generateQueries --> selectSearch --> fetchResults --> processResults
+    processResults --> updateKB --> KB
+    processResults --> evaluateQuality --> checkDepth
+    checkDepth -->|Yes| selectDirection
+    selectDirection & KB --> formulateQuery --> decrementDepth --> selectAI
+    checkDepth -->|No| generateReport
+    KB --> generateReport
+```
+
+
 ## Features
 
 - **Iterative Research**: Performs deep research by iteratively generating search queries, processing results, and diving deeper based on findings
