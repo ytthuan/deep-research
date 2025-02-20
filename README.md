@@ -121,6 +121,81 @@ flowchart TB
     class G,V,A,GS,FC input
 ```
 
+```mermaid
+flowchart TB
+    subgraph Input[Initial Setup]
+        Q[User Query]
+        B[Breadth Parameter]
+        D[Depth Parameter]
+        subgraph AI[AI Provider]
+            G[Gemini]
+            V[Vertex AI]
+            A[Azure OpenAI]
+        end
+        subgraph Search[Search Method]
+            GS[Google + Jina]
+            FC[Firecrawl]
+        end
+    end
+
+    subgraph Feedback[Feedback Loop]
+        FQ[Generate Follow-up Questions]
+        UA[User Answers]
+        CQ[Combined Query]
+    end
+
+    subgraph Research[Deep Research]
+        DR[Conduct Research]
+        SQ[Generate SERP Queries]
+        PR[Process Results]
+    end
+
+    subgraph Results[Results]
+        NL[Learnings]
+        ND[New Directions]
+    end
+
+    subgraph Decision[Decision Point]
+        DP{Depth > 0?}
+        RD[Select Next Direction]
+    end
+
+    subgraph Output[Final Output]
+        MR[Generate Markdown Report]
+    end
+
+    %% Main Flow
+    Q --> FQ
+    FQ --> UA
+    UA --> CQ
+    CQ & B & D & AI & Search --> DR
+    DR --> SQ
+    SQ --> PR
+    PR --> NL
+    PR --> ND
+
+    %% Decision and Recursion
+    NL & ND --> DP
+    DP -->|Yes| RD
+    RD -->|Update Context| DR
+    DP -->|No| MR
+
+    %% Styling
+    classDef input fill:#7bed9f,stroke:#2ed573,color:black
+    classDef process fill:#70a1ff,stroke:#1e90ff,color:black
+    classDef recursive fill:#ffa502,stroke:#ff7f50,color:black
+    classDef output fill:#ff4757,stroke:#ff6b81,color:black
+    classDef results fill:#a8e6cf,stroke:#3b7a57,color:black
+    classDef feedback fill:#ff9ff3,stroke:#f368e0,color:black
+
+    class Q,B,D,AI,Search input
+    class DR,SQ,PR process
+    class DP,RD recursive
+    class MR output
+    class NL,ND results
+    class FQ,UA,CQ feedback
+```
+
 ## Features
 
 - **Iterative Research**: Performs deep research by iteratively generating search queries, processing results, and diving deeper based on findings

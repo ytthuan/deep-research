@@ -58,6 +58,11 @@ Requirements:
    - Determine success criteria
 
 Make sure each question is unique and provides value beyond previous questions.`,
+
+
+//example of full prompt
+//
+
     schema: feedbackSchema,
   });
 
