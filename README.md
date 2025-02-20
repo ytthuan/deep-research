@@ -119,60 +119,76 @@ flowchart TB
 flowchart TB
     subgraph Input[Initial Setup]
         Q[User Query]
-        B[Breadth]
-        D[Depth]
-        KB[Knowledge Base: Empty]
-        subgraph AI[AI Providers]
+        B[Breadth Parameter]
+        D[Depth Parameter]
+        subgraph AI[AI Provider]
             G[Gemini]
             V[Vertex AI]
+            A[Azure OpenAI]
         end
-        subgraph Search[Search Methods]
+        subgraph Search[Search Method]
             GS[Google + Jina]
             FC[Firecrawl]
         end
     end
 
-    subgraph Feedback[Adaptive Feedback Loop]
-        generateFQ[Generate Follow-up Questions using AI & KB]
-        getUA[Get User Answers]
-        evaluateAnswers[Evaluate if Sufficient]
-        combineQuery[Combine into CQ]
-        generateFQ --> getUA --> evaluateAnswers -->|Need more| generateFQ
-        evaluateAnswers -->|Sufficient| combineQuery
+    subgraph Feedback[Feedback Loop]
+        FQ[Generate Follow-up Questions]
+        UA[User Answers]
+        CQ[Combined Query]
     end
 
     subgraph Research[Deep Research]
-        selectAI[Select AI Provider]
-        interpretQuery[Interpret CQ using AI & KB]
-        generateQueries[Generate Research Queries]
-        selectSearch[Select Search Methods]
-        fetchResults[Fetch Results]
-        processResults[Process Results]
-        updateKB[Update Knowledge Base]
-        evaluateQuality[Evaluate Quality]
+        DR[Conduct Research]
+        SQ[Generate SERP Queries]
+        PR[Process Results]
+    end
+
+    subgraph Results[Results]
+        NL[Learnings]
+        ND[New Directions]
     end
 
     subgraph Decision[Decision Point]
-        checkDepth{Depth > 0 & Promising Directions?}
-        selectDirection[Select New Direction]
-        formulateQuery[Formulate New CQ]
-        decrementDepth[Decrement Depth]
+        DP{Depth > 0?}
+        RD[Select Next Direction]
     end
 
     subgraph Output[Final Output]
-        generateReport[Generate Report]
+        MR[Generate Markdown Report]
     end
 
-    Q & KB --> generateFQ
-    combineQuery & B & D & AI & Search --> selectAI
-    KB --> selectAI --> interpretQuery
-    KB --> interpretQuery --> generateQueries --> selectSearch --> fetchResults --> processResults
-    processResults --> updateKB --> KB
-    processResults --> evaluateQuality --> checkDepth
-    checkDepth -->|Yes| selectDirection
-    selectDirection & KB --> formulateQuery --> decrementDepth --> selectAI
-    checkDepth -->|No| generateReport
-    KB --> generateReport
+    %% Main Flow
+    Q --> FQ
+    FQ --> UA
+    UA --> CQ
+    CQ & B & D & AI & Search --> DR
+    DR --> SQ
+    SQ --> PR
+    PR --> NL
+    PR --> ND
+
+    %% Decision and Recursion
+    NL & ND --> DP
+    DP -->|Yes| RD
+    RD -->|Update Context| DR
+    DP -->|No| MR
+
+    %% Define Color Classes
+    classDef green fill:#b3e6b3,stroke:#2eb82e,color:#000;
+    classDef blue fill:#b3d9ff,stroke:#0073e6,color:#000;
+    classDef orange fill:#ffd699,stroke:#ff9900,color:#000;
+    classDef results fill:#ffe6cc,stroke:#ff9900,color:#000;
+    classDef purple fill:#d9b3e6,stroke:#9900cc,color:#000;
+    classDef red fill:#ff9999,stroke:#ff0000,color:#000;
+
+    %% Assign Classes to Nodes
+    class Q,B,D,G,V,A,GS,FC green;
+    class FQ,UA,CQ blue;
+    class DR,SQ,PR orange;
+    class NL,ND results;
+    class DP,RD purple;
+    class MR red;
 ```
 
 
